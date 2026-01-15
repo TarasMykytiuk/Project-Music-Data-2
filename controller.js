@@ -5,7 +5,11 @@ export default class Controller {
     }
 
     init() {
-        console.log("Model: " + this.model);
-        console.log("View: " + this.view);
+        this.view.addOptions(this.model.getUserIds());
+        this.view.bindUsrSelection((usrId) => this.handleUsrSelection(usrId));
+    }
+
+    handleUsrSelection(usrId) {
+        this.model.setCurrentUsrId(usrId);
     }
 }
