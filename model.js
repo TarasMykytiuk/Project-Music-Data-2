@@ -81,14 +81,12 @@ export default class Model {
             }
             //friday night part//
             //genres statistics//
-            if (this.#usrGenres[song.genre]) {
-                this.#usrGenres[song.genre].totalCount++;
-            } else {
-                this.#usrGenres[song.genre] = { genre: song.genre, totalCount: 1 }
-            }
+            if (this.#usrGenres[song.genre]) { this.#usrGenres[song.genre].totalCount++; }
+            else { this.#usrGenres[song.genre] = { genre: song.genre, totalCount: 1 } }
             //genres statistics//
         });
     }
+
     getSortedItems(type, property) {
         let arr = [];
         switch (type) {
