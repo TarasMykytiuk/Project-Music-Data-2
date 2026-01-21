@@ -34,15 +34,6 @@ const mockListenEvents = [
     { "timestamp": "2024-08-01T02:00:31", "seconds_since_midnight": 7231, "song_id": "song-8" },
 ]
 model.processListenEvents(mockListenEvents, (songId) => dataModel.getSong(songId));
-
-console.log(model.getSortedItems("songs", "totalCount"));
-/*
-console.log(model.getSortedItems("artists", "totalTime"));
-*/
-/*
-console.log("**********Friday**********")
-console.log(model.getSortedItems("songs", "friNightDuration"));
-*/
 test("Each song has unique record", () => {
     expect(model.getSortedItems("songs", "totalCount").length).toEqual(7);
 });
