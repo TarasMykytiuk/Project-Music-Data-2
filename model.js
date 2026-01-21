@@ -21,8 +21,10 @@ export default class Model {
             const date = listenEvent.timestamp.substring(0, 10);
             this.#usrListenDates.add(date);
             //every day song part//
+            //songs statistics//
             if (!this.#usrSongs[listenEvent.song_id]) {
                 this.#usrSongs[listenEvent.song_id] = {
+                    id: listenEvent.song_id,
                     artist: song.artist,
                     title: song.title,
                     totalCount: 1,
@@ -34,9 +36,26 @@ export default class Model {
                     dates: new Set(),
                     genre: song.genre
                 }
+            } else {
+                this.#usrSongs[listenEvent.song_id].totalTime += song.duration_seconds;
+                this.#usrSongs[listenEvent.song_id].totalCount += 1;
             }
-            this.#usrSongs[listenEvent.song_id].totalTime += song.duration_seconds;
-            this.#usrSongs[listenEvent.song_id].totalCount += 1;
+            //songs statistics//
+            //every day song part//
+            this.#usrSongs[listenEvent.song_id].dates.add(date);
+            //every day song part//
+            //artists statistics//
+            if (!this.#usrArtists[song.artist]) {
+                this.#usrArtists[song.artist] = {
+                    artist: song.artist,
+                    totalTime: song.duration_seconds,
+                    totalCount: 1,
+                }
+            } else {
+                this.#usrArtists[song.artist].totalTime += song.duration_seconds;
+                this.#usrArtists[song.artist].totalCount += 1;
+            }
+            //artist statistics//
             //streak song part//
             if (prevSong.id === listenEvent.song_id) {
                 this.#usrSongs[listenEvent.song_id].currentStreak += 1;
@@ -48,6 +67,12 @@ export default class Model {
             if (this.#usrSongs[listenEvent.song_id].currentStreak > this.#usrSongs[listenEvent.song_id].maxSteak) {
                 this.#usrSongs[listenEvent.song_id].maxSteak = this.#usrSongs[listenEvent.song_id].currentStreak;
             }
+            if (
+                !longesStreakSong.maxSteak ||
+                longesStreakSong.maxSteak < this.#usrSongs[listenEvent.song_id].maxSteak
+            ) {
+                longesStreakSong = this.#usrSongs[listenEvent.song_id]
+            }
             //streak song part//
             //friday night part//
             if (this.isSongFridayNight(new Date(listenEvent.timestamp), listenEvent.seconds_since_midnight)) {
@@ -55,32 +80,13 @@ export default class Model {
                 this.#usrSongs[listenEvent.song_id].friNightCount++;
             }
             //friday night part//
-            //streak song part//
-            if (
-                !longesStreakSong.maxSteak ||
-                longesStreakSong.maxSteak < this.#usrSongs[listenEvent.song_id].maxSteak
-            ) {
-                longesStreakSong = this.#usrSongs[listenEvent.song_id]
-            }
-            //every day song part//
-            this.#usrSongs[listenEvent.song_id].dates.add(date);
-            //every day song part//
-            //streak song part//
-            if (this.#usrArtists[song.artist]) {
-                this.#usrArtists[song.artist].totalTime += song.duration_seconds;
-                this.#usrArtists[song.artist].totalCount += 1;
-            } else {
-                this.#usrArtists[song.artist] = {
-                    artist: song.artist,
-                    totalTime: song.duration_seconds,
-                    totalCount: 1,
-                }
-            }
+            //genres statistics//
             if (this.#usrGenres[song.genre]) {
                 this.#usrGenres[song.genre].totalCount++;
             } else {
                 this.#usrGenres[song.genre] = { genre: song.genre, totalCount: 1 }
             }
+            //genres statistics//
         });
     }
     getSortedItems(type, property) {
