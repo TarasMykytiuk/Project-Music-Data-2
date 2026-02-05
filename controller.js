@@ -39,12 +39,11 @@ export default class Controller {
                 .join(", ");
             this.view.addQuestionRow("Every day songs", everyDaySongsAnswer);
         }
-        if (sortedGenres.length == 1) {
-            this.view.addQuestionRow("Top genre", sortedGenres[0].genre);
-        } else if (sortedGenres.length == 2) {
-            this.view.addQuestionRow("Top two genres", sortedGenres[0].genre + ", " + sortedGenres[1].genre);
-        } else if (sortedGenres.length >= 3) {
-            this.view.addQuestionRow("Top three genres", sortedGenres[0].genre + ", " + sortedGenres[1].genre + ", " + sortedGenres[2].genre);
-        }
+        let genresQuestion = sortedGenres.length == 1 ? "Top genre" : "Top two genres";
+        const genresAnswer = sortedGenres
+            .map((item) => item.genre)
+            .slice(0, 3)
+            .join(", ");
+        this.view.addQuestionRow(genresQuestion, genresAnswer);
     }
 }
