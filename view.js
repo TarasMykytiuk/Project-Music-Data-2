@@ -50,4 +50,8 @@ export default class View {
         row.appendChild(answerCol);
         this.#elements.usrTableBody.appendChild(row);
     }
+
+    displaySong(song) {
+        return song.artist + " - " + song.title;
+    }
 }

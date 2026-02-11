@@ -24,22 +24,22 @@ export default class Controller {
         const longestStreak = this.model.getSortedItems("songs", "maxSteak")[0];
         const everyDaySongs = this.model.getEveryDaySongs();
         const sortedGenres = this.model.getSortedItems("genres", "totalCount");
-        this.view.addQuestionRow("Most listened song (count)", mostSongByCount.artist + " - " + mostSongByCount.title);
-        this.view.addQuestionRow("Most listened song (time)", mostSongByTime.artist + " - " + mostSongByTime.title);
+        this.view.addQuestionRow("Most listened song (count)", this.view.displaySong(mostSongByCount));
+        this.view.addQuestionRow("Most listened song (time)", this.view.displaySong(mostSongByTime));
         this.view.addQuestionRow("Most listened artist (count)", mostArtistByCount.artist);
         this.view.addQuestionRow("Most listened artist (time)", mostArtistByTime.artist);
         if (mostFriSongByCount.friNightCount != 0) {
-            this.view.addQuestionRow("Friday night song (count)", mostFriSongByCount.artist + " - " + mostFriSongByCount.title);
-            this.view.addQuestionRow("Friday night song (time)", mostFriSongByTime.artist + " - " + mostFriSongByTime.title);
+            this.view.addQuestionRow("Friday night song (count)", this.view.displaySong(mostFriSongByCount));
+            this.view.addQuestionRow("Friday night song (time)", this.view.displaySong(mostFriSongByTime));
         }
-        this.view.addQuestionRow("Longest streak song", longestStreak.artist + " - " + longestStreak.title + " (length: " + longestStreak.maxSteak + ")");
+        this.view.addQuestionRow("Longest streak song", this.view.displaySong(longestStreak) + " (length: " + longestStreak.maxSteak + ")");
         if (everyDaySongs.length != 0) {
             const everyDaySongsAnswer = everyDaySongs
-                .map((song) => { return song.artist + " - " + song.title })
+                .map((song) => this.view.displaySong(song))
                 .join(", ");
             this.view.addQuestionRow("Every day songs", everyDaySongsAnswer);
         }
-        let genresQuestion = sortedGenres.length == 1 ? "Top genre" : "Top two genres";
+        const genresQuestion = sortedGenres.length == 1 ? "Top genre" : "Top two genres";
         const genresAnswer = sortedGenres
             .map((item) => item.genre)
             .slice(0, 3)

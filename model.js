@@ -13,7 +13,6 @@ export default class Model {
     processListenEvents(listenEvents, getSong) {
         if (!listenEvents.length) { return [] }
         this.clearUsrData();
-        let longesStreakSong = {};
         let prevSong = [];
         listenEvents.forEach(listenEvent => {
             const song = getSong(listenEvent.song_id);
@@ -67,12 +66,6 @@ export default class Model {
             if (this.#usrSongs[listenEvent.song_id].currentStreak > this.#usrSongs[listenEvent.song_id].maxSteak) {
                 this.#usrSongs[listenEvent.song_id].maxSteak = this.#usrSongs[listenEvent.song_id].currentStreak;
             }
-            if (
-                !longesStreakSong.maxSteak ||
-                longesStreakSong.maxSteak < this.#usrSongs[listenEvent.song_id].maxSteak
-            ) {
-                longesStreakSong = this.#usrSongs[listenEvent.song_id]
-            }
             //streak song part//
             //friday night part//
             if (this.isSongFridayNight(new Date(listenEvent.timestamp), listenEvent.seconds_since_midnight)) {
@@ -102,8 +95,10 @@ export default class Model {
     }
 
     isSongFridayNight(date, secAfterMid) {
-        const isFridayNight = date.getDay() == 5 && secAfterMid > 61200;
-        const isSaturdayMorning = date.getDay() == 6 && secAfterMid < 14400;
+        const eveningStart = 61200; // 17:00 AM in seconds after midnight
+        const lateNightEnd = 14400; // 4:00 AM in seconds after midnight
+        const isFridayNight = date.getDay() == 5 && secAfterMid > eveningStart;
+        const isSaturdayMorning = date.getDay() == 6 && secAfterMid < lateNightEnd;
         return isFridayNight || isSaturdayMorning;
     }
 
